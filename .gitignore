@@ -89,4 +89,4 @@ ENV/
 .ropeproject
 
 # We don't want to track migrations
-*/migrations/*
+*/migrations/
