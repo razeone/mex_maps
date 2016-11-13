@@ -4,6 +4,9 @@ from django.contrib.gis.db import models
 class WorldBorder(models.Model):
     # Regular Django fields corresponding to the attributes in the
     # world borders shapefile.
+    """
+    Example model from the GeoDjango tutorial
+    """
     name = models.CharField(max_length=50)
     area = models.IntegerField()
     pop2005 = models.IntegerField('Population 2005')
@@ -19,6 +22,12 @@ class WorldBorder(models.Model):
     # GeoDjango-specific: a geometry field (MultiPolygonField)
     mpoly = models.MultiPolygonField()
 
+
     # Returns the string representation of the model.
     def __str__(self):              # __unicode__ on Python 2
         return self.name
+
+
+class Country(models.Model):
+    name = models.CharField(max_length=50)
+    
