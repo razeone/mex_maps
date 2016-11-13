@@ -90,3 +90,6 @@ ENV/
 
 # We don't want to track migrations
 */migrations/
+
+# Also let's ignore the data folder
+*/data/

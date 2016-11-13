@@ -1,14 +1,22 @@
-from .models import User, Group
+from .models import Country
 from rest_framework import serializers
 
 
-class UserSerializer(serializers.HyperlinkedModelSerializer):
+class CountrySerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
-        model = User
-        fields = ('url', 'username', 'email', 'groups')
-
-
-class GroupSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = Group
-        fields = ('url', 'name')
+        model = Country
+        fields = (
+            'url',
+            'name',
+            'translated_name',
+            'area',
+            'pop2005',
+            'fips',
+            'iso2',
+            'iso3',
+            'un',
+            'region',
+            'subregion',
+            'lat',
+            'lon',
+            'phone_code')

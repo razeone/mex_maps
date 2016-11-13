@@ -1,10 +1,11 @@
-from django.shortcuts import render
-
-# Create your views here.
-from rest_framework.decorators import api_view
-from rest_framework import Response
+from .models import Country
+from rest_framework import viewsets
+from .serializers import CountrySerializer
 
 
-@api_view()
-def hello_world(request):
-    return Response({"message": "Hello, world!"})
+class CountryViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows users to be viewed or edited.
+    """
+    queryset = Country.objects.all().order_by('-name')
+    serializer_class = CountrySerializer
