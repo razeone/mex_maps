@@ -7,6 +7,7 @@ Let's map México and see what happens
 $ export DATABASE_NAME='your_geographic_db'
 $ export DATABASE_USER='your_db_user'
 $ export DATABASE_PASSWORD='your_db_password'
+$ pip install -r requirements.txt
 $ ./manage.py makemigrations
 $ ./manage.py migrate
 $ unzip world/data/TM_WORLD_BORDERS-0.3.zip

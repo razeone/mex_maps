@@ -1,11 +1,18 @@
 from django.contrib.gis.db import models
 
 
-class Country(models.Model):
-    # Regular Django fields corresponding to the attributes in the
-    # world borders shapefile.
+class World(models.Model):
     """
-    Example model from the GeoDjango tutorial
+    It's impossible to understand geospatial analysis without a 
+    world/planet object
+    """
+    name = models.CharField('Name your world', max_length=100)
+
+
+class Country(models.Model):
+    """
+    Regular Django fields corresponding to the attributes in the
+    world borders shapefile.
     """
     name = models.CharField(max_length=50)
     translated_name = models.CharField(max_length=50)
@@ -20,6 +27,7 @@ class Country(models.Model):
     lon = models.FloatField()
     lat = models.FloatField()
     phone_code = models.CharField(max_length=5, null=True)
+    world = models.ForeignKey(World, on_delete=models.CASCADE)
 
     # GeoDjango-specific: a geometry field (MultiPolygonField)
     mpoly = models.MultiPolygonField()
@@ -27,3 +35,12 @@ class Country(models.Model):
     # Returns the string representation of the model.
     def __str__(self):              # __unicode__ on Python 2
         return self.name
+
+    def get_lan_long(self):
+        return {
+            'lat': self.lat,
+            'lon': self.lon
+        }
+
+    def get_geom(self):
+        return self.mpoly

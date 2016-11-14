@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.gis',
     'rest_framework',
-    'world',
+    'world.apps.WorldConfig',
+    'country.apps.CountryConfig'
 ]
 
 REST_FRAMEWORK = {
