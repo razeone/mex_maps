@@ -87,3 +87,9 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+# We don't want to track migrations
+maps/*/migrations/
+
+# Also let's ignore the data folder
+maps/world/data/*

@@ -1,6 +1,6 @@
 import os
 from django.contrib.gis.utils import LayerMapping
-from .models import WorldBorder
+from .models import Country
 
 world_mapping = {
     'fips': 'FIPS',
@@ -25,7 +25,7 @@ world_shp = os.path.abspath(
 
 def run(verbose=True):
     lm = LayerMapping(
-        WorldBorder, world_shp, world_mapping,
+        Country, world_shp, world_mapping,
         transform=False, encoding='iso-8859-1',
     )
     lm.save(strict=True, verbose=verbose)
