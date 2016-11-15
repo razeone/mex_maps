@@ -22,7 +22,7 @@ class Country(models.Model):
     phone_code = models.CharField(max_length=5, null=True)
 
     # GeoDjango-specific: a geometry field (MultiPolygonField)
-    mpoly = models.MultiPolygonField()
+    mpoly = models.MultiPolygonField(null=True)
 
     # Returns the string representation of the model.
     def __str__(self):              # __unicode__ on Python 2
