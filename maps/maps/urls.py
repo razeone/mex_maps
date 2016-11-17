@@ -16,16 +16,12 @@ Including another URLconf
 from django.conf.urls import url
 from django.conf.urls import include
 from django.contrib.gis import admin
-from rest_framework import routers
-from world.views import CountryViewSet
 
-router = routers.DefaultRouter()
-router.register(r'countries', CountryViewSet)
 
 urlpatterns = [
-    url(r'^', include(router.urls)),
     url(r'^admin/', admin.site.urls),
     url(r'^api-auth/', include('rest_framework.urls',
-                               namespace='rest_framework'))
+                               namespace='rest_framework')),
+    url(r'^', include('world.urls')),
 
 ]

@@ -15,8 +15,11 @@ def get_country_border_as_geojson(name):
 
 
 def get_country_centroid_as_geojson(name):
-    country = Country.objects.get(
+    """
+    Gets a country centroid as GeoJSON
+    hint: nested geofunction calls
+    """
+    result = Country.objects.annotate(
+        json=AsGeoJSON(Centroid('mpoly'))).get(
         name=name)
-    c = AsGeoJSON(Centroid(country.mpoly))
-    print(c)
-    #return result
+    return(result)
