@@ -3,7 +3,6 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 from .load import run
 from .models import Country
-from .serializers import CountrySerializer
 import zipfile
 
 # Create your tests here.

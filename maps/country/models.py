@@ -15,9 +15,3 @@ class CountryGeo(models.Model):
     @cached_property
     def __str__(self):
         return self.country.name
-
-    @cached_property
-    def get_country_border_as_geojson(self):
-        query_text = '''select ST_AsGEOJSON(ST_Centroid(mpoly))
-                     from world_country where name='''
-        return self.objects.raw()
