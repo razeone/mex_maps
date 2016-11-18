@@ -3,6 +3,8 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 from .load import run
 from .models import Country
+from .utils import get_country_border_as_geojson
+from .utils import get_capitalized_country_name
 import zipfile
 
 # Create your tests here.
@@ -58,6 +60,19 @@ class CountryTestCase(TestCase):
     def test_get_country(self):
         c = Country.objects.get(name="My Country")
         self.assertEquals(c.translated_name, "Mi País")
+
+    def test_get_country_border_as_geojson(self):
+        result = get_country_border_as_geojson("My Country")
+        empty_json = {"error": "Not good"}
+        self.assertJSONNotEqual(result, empty_json)
+
+    def test_get_country_border_as_geojson_except(self):
+        with self.assertRaises(Country.DoesNotExist):
+            get_country_border_as_geojson("My County")
+
+    def test_get_capitalized_country_name(self):
+        result = get_capitalized_country_name("mexico es un pais")
+        self.assertEquals(result, "Mexico Es Un Pais")
 
 
 class CountryAPITestCase(APITestCase):
