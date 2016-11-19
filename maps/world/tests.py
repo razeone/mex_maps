@@ -3,13 +3,19 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 from .load import run
 from .models import Country
-from .serializers import CountrySerializer
+from .utils import get_country_border_as_geojson
+from .utils import get_capitalized_country_name
+from .utils import get_country_centroid_as_geojson
 import zipfile
 
 # Create your tests here.
 
 
 class CountryTestCase(TestCase):
+    """
+    Here's where we write tests for particular functions and methods
+    """
+
     def setUp(self):
         polygon_wkt = (
             "MULTIPOLYGON(((-61.686668 17.0244410000001,-61.73806 16.989719,"
@@ -50,6 +56,9 @@ class CountryTestCase(TestCase):
         country.save()
 
     def test_load_run(self):
+        """
+        Test that we can load the data from zipfile
+        """
         zip_ref = zipfile.ZipFile('world/data/TM_WORLD_BORDERS-0.3.zip', 'r')
         zip_ref.extractall('world/data/')
         zip_ref.close()
@@ -57,11 +66,49 @@ class CountryTestCase(TestCase):
             self.assertEquals(True, True)
 
     def test_get_country(self):
+        """
+        Test that we can get the created country
+        """
         c = Country.objects.get(name="My Country")
         self.assertEquals(c.translated_name, "Mi País")
 
+    def test_get_country_border_as_geojson(self):
+        """
+        Test to get a GeoJSON object from created country
+        """
+        result = get_country_border_as_geojson("My Country")
+        empty_json = {"error": "Not good"}
+        self.assertJSONNotEqual(result, empty_json)
+
+    def test_get_country_border_as_geojson_except(self):
+        """
+        Test to raise an exception from an unexistent country
+        """
+        with self.assertRaises(Country.DoesNotExist):
+            get_country_border_as_geojson("My County")
+
+    def test_get_capitalized_country_name(self):
+        """
+        Test that we can get a capitalized name for the country
+        """
+        result = get_capitalized_country_name("mexico es un pais")
+        self.assertEquals(result, "Mexico Es Un Pais")
+
+    def test_get_country_centroid_as_geojson(self):
+        """
+        Test that we can generate a GeoJSON point from mpoly field
+        within a given country
+        """
+        result = get_country_centroid_as_geojson("My Country")
+        empty_json = {"error": "Not good"}
+        self.assertJSONNotEqual(result, empty_json)
+
 
 class CountryAPITestCase(APITestCase):
+    """
+    Here's where we put tests for API REST endpoints
+    """
+
     def setUp(self):
         polygon_wkt = (
             "MULTIPOLYGON(((-61.686668 17.0244410000001,-61.73806 16.989719,"
@@ -102,8 +149,33 @@ class CountryAPITestCase(APITestCase):
         country.save()
 
     def test_create_country_serializer(self):
+        """
+        Ensure that we can get all countries JSON
+        """
         url = '/countries/'
         response = self.client.get(url, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(Country.objects.count(), 1)
         self.assertEqual(Country.objects.get().name, 'My Country')
+
+    def test_get_border_as_geojson(self):
+        """
+        Ensure we can get GeoJSON for a given country
+        """
+        url = '/countries/get_border_as_geojson/My%20Country/'
+        response = self.client.get(url, format='json')
+        empty_json = {"error": "Not good"}
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['type'], 'MultiPolygon')
+        self.assertNotEqual(response.data, empty_json)
+
+    def test_get_centroid_as_geojson(self):
+        """
+        Ensure we can get a centroid JSON for a given country
+        """
+        url = '/countries/get_centroid_as_geojson/My%20Country/'
+        response = self.client.get(url, format='json')
+        empty_json = {"error": "Not good"}
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['type'], 'Point')
+        self.assertNotEqual(response.data, empty_json)
