@@ -5,12 +5,17 @@ from .load import run
 from .models import Country
 from .utils import get_country_border_as_geojson
 from .utils import get_capitalized_country_name
+from .utils import get_country_centroid_as_geojson
 import zipfile
 
 # Create your tests here.
 
 
 class CountryTestCase(TestCase):
+    """
+    Here's where we write tests for particular functions and methods
+    """
+
     def setUp(self):
         polygon_wkt = (
             "MULTIPOLYGON(((-61.686668 17.0244410000001,-61.73806 16.989719,"
@@ -74,8 +79,17 @@ class CountryTestCase(TestCase):
         result = get_capitalized_country_name("mexico es un pais")
         self.assertEquals(result, "Mexico Es Un Pais")
 
+    def test_get_country_centroid_as_geojson(self):
+        result = get_country_centroid_as_geojson("My Country")
+        empty_json = {"error": "Not good"}
+        self.assertJSONNotEqual(result, empty_json)
+
 
 class CountryAPITestCase(APITestCase):
+    """
+    Here's where we put tests for API REST endpoints
+    """
+
     def setUp(self):
         polygon_wkt = (
             "MULTIPOLYGON(((-61.686668 17.0244410000001,-61.73806 16.989719,"
@@ -116,8 +130,13 @@ class CountryAPITestCase(APITestCase):
         country.save()
 
     def test_create_country_serializer(self):
+        """
+        Ensure we can get GeoJSON for a given country
+        """
         url = '/countries/'
         response = self.client.get(url, format='json')
+        print(response.content_type)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # self
         self.assertEqual(Country.objects.count(), 1)
         self.assertEqual(Country.objects.get().name, 'My Country')

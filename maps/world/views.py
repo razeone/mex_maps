@@ -11,6 +11,10 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 import json
 
+ERROR_MESSAGES = {
+    'error': 'Not found',
+}
+
 
 class CountryViewSet(viewsets.ModelViewSet):
     """
@@ -31,13 +35,22 @@ class GetGeoJSONByCountry(APIView):
             result = json.loads(get_country_border_as_geojson(country))
             return Response(result, status=status.HTTP_200_OK)
         except ObjectDoesNotExist:
-            error_result = {'error': 'Not found'}
-            return Response(error_result, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                ERROR_MESSAGES['error'],
+                status=status.HTTP_404_NOT_FOUND)
 
 
+class GetCentroidByCountry(APIView):
+    """
+    Class based view to retrieve the centroid of a country as JSON
+    """
+    permission_classes = (AllowAny,)
 
-#@api_view(['GET'])
-def get_geojson_centroid_by_country(request):
-    if request.method == 'GET':
-        get_country_centroid_as_geojson()
-        return Response()
+    def get(self, request, country):
+        try:
+            result = json.loads(get_country_centroid_as_geojson(country))
+            return Response(result, status=status.HTTP_200_OK)
+        except ObjectDoesNotExist:
+            return Response(
+                ERROR_MESSAGES['error'],
+                status=status.HTTP_404_NOT_FOUND)

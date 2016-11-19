@@ -12,7 +12,7 @@ country_list = CountryViewSet.as_view({
 
 urlpatterns = [
     url(r'^countries/$', country_list, name='country-view'),
-    url(r'^countries/border_as_geojson/(?P<country>[a-zA-Z]+)/$',
+    url(r'^countries/border_as_geojson/(?P<country>[^0-9]+)/$',
         GetGeoJSONByCountry.as_view()),
     # url(r'^customers/$', customer_list, name='customer-view'),
     # url(r'^customers/(?P<pk>[0-9]+)/$', customer_detail, name='customer-detail'),
